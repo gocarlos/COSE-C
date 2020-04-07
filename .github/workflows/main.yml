@@ -46,7 +46,7 @@ jobs:
           cmake $GITHUB_WORKSPACE \
           -DBUILD_SHARED_LIBS=${{matrix.BUILD_SHARED_LIBS}} \
           -DCOSE_C_USE_CONTEXT=${{matrix.USE_CONTEXT}} \
-          -DCOSE_C_BUILD_DOCS=ON \
+          -DCOSE_C_BUILD_DOCS=OFF \
           -DCOSE_C_BUILD_TESTS=ON \
           -Dcoveralls_send=ON \
           ${{matrix.CMAKE_OPTIONS}} \
