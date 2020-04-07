@@ -1,5 +1,3 @@
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${dist_dir}/test)
-
 add_executable(cose_test test.c json.c encrypt.c sign.c context.c mac_test.c)
 
 target_link_libraries(cose_test PRIVATE cose-c)
@@ -15,11 +13,11 @@ if(MSVC)
   target_link_libraries(cose_test PRIVATE ws2_32)
 endif()
 
-target_include_directories(cose_test PRIVATE ../src)
+# target_include_directories(cose_test PRIVATE ../src)
 
 enable_testing()
 
-add_test(NAME cose_test COMMAND cose_test)
+add_test(NAME cose_test COMMAND ${CMAKE_BINARY_DIR}/bin/cose_test)
 
 add_test(
   NAME RFC8152

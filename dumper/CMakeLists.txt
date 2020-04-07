@@ -1,5 +1,3 @@
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${dist_dir}/dumper)
-
 add_executable(cose_dumper dumper.c)
 target_link_libraries(cose_dumper PRIVATE cose-c)
 
