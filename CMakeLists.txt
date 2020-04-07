@@ -82,7 +82,7 @@ if(MSVC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
   set(coveralls OFF)
 endif()
 
-message("Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 add_definitions(-DUSE_ARRAY)
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")

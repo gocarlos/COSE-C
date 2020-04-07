@@ -8,6 +8,8 @@ endif()
 
 if(COSE_C_USE_MBEDTLS)
   target_link_libraries(cose_dumper PRIVATE mbedtls)
+  target_include_directories(cose_dumper PRIVATE ${MBEDTLS_INCLUDE_DIRS})
+  target_link_libraries(cose_dumper PRIVATE ${MBEDTLS_LIBRARY})
 else()
   target_include_directories(cose_dumper PRIVATE ${OPENSSL_INCLUDE_DIR})
   target_link_libraries(cose_dumper PRIVATE ${OPENSSL_LIBRARIES})
