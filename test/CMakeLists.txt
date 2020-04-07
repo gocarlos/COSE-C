@@ -13,7 +13,7 @@ if(MSVC)
   target_link_libraries(cose_test PRIVATE ws2_32)
 endif()
 
-# target_include_directories(cose_test PRIVATE ../src)
+target_include_directories(cose_test PRIVATE ../src)
 
 enable_testing()
 
