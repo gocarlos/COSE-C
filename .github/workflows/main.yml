@@ -26,7 +26,7 @@ jobs:
       - name: setup (linux)
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          sudo apt install libmbedtls-dev libssl-dev libmbedtls-dev cmake-data \
+          sudo apt install libmbedtls-dev libssl-dev libmbedtls-dev cmake-data && \
           pip install cpp-coveralls --user
 
       - name: clone examples CMake
