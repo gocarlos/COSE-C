@@ -1,0 +1,63 @@
+name: CMake
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        BUILD_SHARED_LIBS: ["ON", "OFF"]
+        USE_MBEDTLS: ["ON", "OFF"]
+        USE_CONTEXT: ["ON", "OFF"]
+        CMAKE_OPTIONS:
+          [
+            "-Dinclude_encrypt=ON -Dinclude_encrypt0=OFF -Dinclude_mac0=OFF -Dinclude_mac=OFF -Dinclude_sign=OFF -Dinclude_sign0=OFF",
+            "-Dinclude_encrypt=OFF -Dinclude_encrypt0=ON -Dinclude_mac0=OFF -Dinclude_mac=OFF -Dinclude_sign=OFF -Dinclude_sign0=OFF",
+            "-Dinclude_encrypt=OFF -Dinclude_encrypt0=OFF -Dinclude_mac0=ON -Dinclude_mac=OFF -Dinclude_sign=OFF -Dinclude_sign0=OFF",
+            "-Dinclude_encrypt=OFF -Dinclude_encrypt0=OFF -Dinclude_mac0=OFF -Dinclude_mac=ON -Dinclude_sign=OFF -Dinclude_sign0=OFF",
+            "-Dinclude_encrypt=OFF -Dinclude_encrypt0=OFF -Dinclude_mac0=OFF -Dinclude_mac=OFF -Dinclude_sign=ON -Dinclude_sign0=OFF",
+            "-Dinclude_encrypt=OFF -Dinclude_encrypt0=OFF -Dinclude_mac0=OFF -Dinclude_mac=OFF -Dinclude_sign=OFF -Dinclude_sign0=ON",
+          ]
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: setup (linux)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt install libmbedtls-dev libssl-dev libmbedtls-dev cmake-data \
+          pip install cpp-coveralls --user
+
+      - name: clone examples CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}
+        run: |
+          cmake --version && \
+          git clone --depth 1 git://github.com/cose-wg/Examples Examples
+
+      - name: Create Build Environment
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: |
+          cmake $GITHUB_WORKSPACE \
+          -DBUILD_SHARED_LIBS=${{matrix.BUILD_SHARED_LIBS}} \
+          -DCOSE_C_USE_CONTEXT=${{matrix.USE_CONTEXT}} \
+          -DENABLE_EXAMPLES=ON \
+          -DENABLE_TESTS=ON \
+          -Dcoveralls_send=ON \
+          ${{matrix.CMAKE_OPTIONS}} \
+          -DCOSE_C_USE_MBEDTLS=${{matrix.USE_MBEDTLS}}
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build .
+
+      - name: Test
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: ctest . && cmake --build . --target coveralls
