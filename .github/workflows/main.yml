@@ -32,7 +32,7 @@ jobs:
       - name: install mbedtls
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          git clone --depth=1 --recurse-submodules git://github.com/ARMmbed/mbedtls mbedtls && \
+          git clone --depth=1 --recurse-submodules --branch master git://github.com/ARMmbed/mbedtls mbedtls && \
           cd mbedtls && \
           mkdir build && \
           cd build  && \
