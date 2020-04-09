@@ -75,6 +75,6 @@ jobs:
           ls -al && \
           ls -al .. && \
           pwd && \
-          git clone --depth 1 git://github.com/cose-wg/Examples ../Examples && \
+          git clone --depth 1 git://github.com/cose-wg/Examples $GITHUB_WORKSPACE/Examples && \
           ctest . --verbose && \
           cmake --build . --target coveralls
