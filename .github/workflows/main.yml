@@ -71,4 +71,4 @@ jobs:
       - name: Test
         working-directory: ${{runner.workspace}}/build
         shell: bash
-        run: ctest . && cmake --build . --target coveralls
+        run: ctest . --verbose && cmake --build . --target coveralls
