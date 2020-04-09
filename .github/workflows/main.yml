@@ -45,7 +45,7 @@ jobs:
         working-directory: ${{runner.workspace}}
         run: |
           cmake --version && \
-          git clone --depth 1 git://github.com/cose-wg/Examples Examples
+          pwd
 
       - name: Create Build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
@@ -71,4 +71,10 @@ jobs:
       - name: Test
         working-directory: ${{runner.workspace}}/build
         shell: bash
-        run: ls -al && ls -al .. && ctest . --verbose && cmake --build . --target coveralls
+        run: |
+          ls -al && \
+          ls -al .. && \
+          pwd && \
+          git clone --depth 1 git://github.com/cose-wg/Examples ../Examples && \
+          ctest . --verbose && \
+          cmake --build . --target coveralls
