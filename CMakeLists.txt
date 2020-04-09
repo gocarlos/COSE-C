@@ -147,7 +147,7 @@ if(COSE_C_USE_PROJECT_ADD)
   fetchcontent_populate(
     project_cn_cbor
     GIT_REPOSITORY https://github.com/jimsch/cn-cbor
-    GIT_TAG complete)
+    GIT_TAG 1.0.0)
   set(optimize
       OFF
       CACHE BOOL "" FORCE)
@@ -190,8 +190,8 @@ target_include_directories(
   PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src)
 
 if(COSE_C_USE_MBEDTLS)
-  target_include_directories(${PROJECT_NAME} PRIVATE ${MBEDTLS_INCLUDE_DIRS})
-  target_link_libraries(${PROJECT_NAME} PRIVATE ${MBEDTLS_LIBRARY})
+  target_include_directories(${PROJECT_NAME} PUBLIC ${MBEDTLS_INCLUDE_DIRS})
+  target_link_libraries(${PROJECT_NAME} PUBLIC ${MBEDTLS_LIBRARIES})
 else()
   target_include_directories(${PROJECT_NAME} PRIVATE ${OPENSSL_INCLUDE_DIR})
   target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENSSL_LIBRARIES})
