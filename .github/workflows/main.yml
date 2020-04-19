@@ -26,7 +26,7 @@ jobs:
       - name: setup (linux)
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          sudo apt install cmake-data python3-pip
+          sudo apt install cmake-data python3-pip python3-setuptools
 
       - name: install conan
         if: startsWith(matrix.os, 'ubuntu')
