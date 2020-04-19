@@ -1,0 +1,70 @@
+name: CMake
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        # os: [ubuntu-latest, windows-latest]
+        BUILD_SHARED_LIBS: ["ON", "OFF"]
+        USE_MBEDTLS: ["ON", "OFF"]
+        USE_CONTEXT: ["ON", "OFF"]
+        CMAKE_OPTIONS:
+          [
+            "-Dinclude_encrypt=ON -Dinclude_encrypt0=OFF -Dinclude_mac0=OFF -Dinclude_mac=OFF -Dinclude_sign=OFF -Dinclude_sign1=OFF",
+            "-Dinclude_encrypt=OFF -Dinclude_encrypt0=ON -Dinclude_mac0=OFF -Dinclude_mac=OFF -Dinclude_sign=OFF -Dinclude_sign1=OFF",
+            "-Dinclude_encrypt=OFF -Dinclude_encrypt0=OFF -Dinclude_mac0=ON -Dinclude_mac=OFF -Dinclude_sign=OFF -Dinclude_sign1=OFF",
+            "-Dinclude_encrypt=OFF -Dinclude_encrypt0=OFF -Dinclude_mac0=OFF -Dinclude_mac=OFF -Dinclude_sign=ON -Dinclude_sign1=OFF",
+            "-Dinclude_encrypt=OFF -Dinclude_encrypt0=OFF -Dinclude_mac0=OFF -Dinclude_mac=OFF -Dinclude_sign=OFF -Dinclude_sign1=ON"
+          ]
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: setup (linux)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt install cmake-data python3-pip
+
+      - name: install conan
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo pip3 install conan
+
+      - name: Create Build directory
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: install conan deps
+        working-directory: ${{runner.workspace}}/build
+        run: conan install ..
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: |
+          cmake $GITHUB_WORKSPACE \
+          -DBUILD_SHARED_LIBS=${{matrix.BUILD_SHARED_LIBS}} \
+          -DCOSE_C_USE_CONTEXT=${{matrix.USE_CONTEXT}} \
+          -DCOSE_C_USE_FIND_PACKAGE=ON \
+          -DCOSE_C_BUILD_DOCS=OFF \
+          -DCOSE_C_BUILD_TESTS=ON \
+          -Dcoveralls_send=ON \
+          ${{matrix.CMAKE_OPTIONS}} \
+          -DCOSE_C_USE_MBEDTLS=${{matrix.USE_MBEDTLS}}
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build .
+
+      # - name: Test
+      #   working-directory: ${{runner.workspace}}/build
+      #   shell: bash
+      #   run: |
+      #     ls -al && \
+      #     ls -al .. && \
+      #     pwd && \
+      #     git clone --depth 1 git://github.com/cose-wg/Examples $GITHUB_WORKSPACE/Examples && \
+      #     ctest . --verbose
