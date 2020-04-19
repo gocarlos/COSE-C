@@ -38,7 +38,7 @@ jobs:
 
       - name: install conan deps
         working-directory: ${{runner.workspace}}/build
-        run: conan install ..
+        run: conan install $GITHUB_WORKSPACE
 
       - name: Configure CMake
         shell: bash
